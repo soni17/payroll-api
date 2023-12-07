@@ -7,4 +7,8 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+
+  get "/" => "payroll#index"
+  post "/payroll/upload-timesheet" => "payroll#upload_timesheet"
+  get "/payroll/report" => "payroll#report"
 end
