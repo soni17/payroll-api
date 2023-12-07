@@ -6,6 +6,7 @@ class PayrollController < ApplicationController
   end
 
   def upload_timesheet
+    render plain: "test"
   end
 
   def report
