@@ -20,6 +20,7 @@ class PayrollController < ApplicationController
   end
 
   def report
+    render json: json_report(pay_period_reports)
   end
 
   private
@@ -78,5 +79,38 @@ class PayrollController < ApplicationController
   def get_end_date(date)
     end_date = date.day < 16 ? 15 : date.end_of_month.day
     Date.new(date.year, date.month, end_date)
+  end
+
+  def json_report(reports)
+    {
+      "payrollReport": {
+        "employeeReports": reports
+      }
+    }
+  end
+
+  def amount_paid(line_items)
+    amount = 0
+    line_items.each do |line|
+      rate = line.job_group == "A" ? 20 : 30
+      amount += line.hours_worked * rate
+    end
+    '%.2f' % amount
+  end
+
+  def pay_period_reports
+    reports = []
+    pay_periods = PayPeriod.all
+    pay_periods.each do |period|
+      reports << {
+        employeeId: "#{period.employee_id}",
+        payPeriod: {
+          startDate: "#{period.start_date}",
+          endDate: "#{period.end_date}"
+        },
+        amountPaid: "$#{amount_paid(period.line_items)}"
+      }
+    end
+    reports.sort_by {|report| report[:employeeId]}
   end
 end
