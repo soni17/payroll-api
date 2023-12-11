@@ -111,6 +111,6 @@ class PayrollController < ApplicationController
         amountPaid: "$#{amount_paid(period.line_items)}"
       }
     end
-    reports.sort_by {|report| report[:employeeId]}
+    reports.sort_by {|report| [ report[:employeeId], report[:payPeriod][:startDate] ] }
   end
 end
